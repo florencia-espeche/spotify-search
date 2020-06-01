@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { SearchContext } from '../App';
 
 import Card from '../components/card';
 
-const Artists = ({ location }) => {
+const Artists = ({ history }) => {
 
-  const { data } = location;
+  const { artistsInfo, searchData } = useContext(SearchContext);
 
 
   return (
     <section>
-      {data.map((data, index) => <Card key={index} artist={data} />)}
+      <h1>Artists</h1>
+      {searchData.map((data, index) => <Card key={index} artist={data} />)}
     </section>)
 
 

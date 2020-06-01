@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { withRouter } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from "react";
+import { SearchContext } from '../App';
 
 import Token from '../config/token';
 
 const Home = ({ history }) => {
+
+  const { artistsInfo, searchData } = useContext(SearchContext);
 
   const [artists, setArtists] = useState([]);
   const [searchText, setSearchText] = useState('');
@@ -20,22 +22,22 @@ const Home = ({ history }) => {
   };
 
   const handleSearchClick = async () => {
-    await fetch(`https://api.spotify.com/v1/search?q=${searchText}&type=artist&limit=6`, {
+    const res = await fetch(`https://api.spotify.com/v1/search?q=${searchText}&type=artist&limit=6`, {
       headers: myHeaders
-    }).then(res => res.json())
-      .then(data => {
-        setArtists(data.artists.items);
-        console.log(data.artists.items);
-      }).then(() => sendData())
-      .catch(err => console.log(err));
+    });
+
+    const data = await res.json();
+    setArtists(data.artists.items);
+    // console.log(data.artists.items);
+    history.push('/artists');
   };
 
-  const sendData = () => {
-    history.push({
-      pathname: '/artists',
-      data: artists
-    });
-  }
+  useEffect(() => {
+    if (artists !== []) {
+      artistsInfo(artists);
+      console.log(artists);
+    }
+  }, [artists]);
 
   return (
     <>
@@ -46,4 +48,4 @@ const Home = ({ history }) => {
   )
 }
 
-export default withRouter(Home);
+export default Home;
